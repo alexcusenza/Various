@@ -1,0 +1,54 @@
+Constructed ThreadPool of size 3
+3 threads created by the thread pool
+Task Initiated 1
+Task Initiated 2
+Task Initiated 3
+Task Initiated 4
+Task Initiated 5
+3057584960 Thread Starting 
+3057584960 Thread Locking 
+3057584960 Thread Unlocking 
+Hello #1 Started
+3065977664 Thread Starting 
+3065977664 Thread Locking 
+3065977664 Thread Unlocking 
+Hello #2 Started
+Hello #2 Finished 
+3074370368 Thread Starting 
+3074370368 Thread Locking 
+3074370368 Thread Unlocking 
+Hello #3 Started
+Hello #1 Finished 
+!!! HELLO #1 Class DiffTime: 0.028643835
+3057584960 Thread Locking 
+3057584960 Thread Unlocking 
+Hello #4 Started
+!!! HELLO #2 Class DiffTime: 0.026372169
+3065977664 Thread Locking 
+3065977664 Thread Unlocking 
+Hello #5 Started
+Hello #5 Finished 
+!!! HELLO #5 Class DiffTime: 0.003633473
+3065977664 Thread Locking 
+3065977664 Waiting and Unlocking 
+Hello #3 Finished 
+!!! HELLO #3 Class DiffTime: 0.024514764
+3074370368 Thread Locking 
+3074370368 Waiting and Unlocking 
+Hello #4 Finished 
+!!! HELLO #4 Class DiffTime: 0.01096487
+3057584960 Thread Locking 
+3057584960 Waiting and Unlocking 
+!!! MAIN GetClass DiffTime1: 1.077411358
+Broadcasting STOP signal to all threads...
+3065977664 Signaled and Locking 
+3065977664 Unlocking and exiting: 
+3074370368 Signaled and Locking 
+3074370368 Unlocking and exiting: 
+pthread_join() returned 0: Success
+pthread_join() returned 0: Success
+3057584960 Signaled and Locking 
+3057584960 Unlocking and exiting: 
+pthread_join() returned 0: Success
+3 threads exited from the thread pool
+Exiting app...
