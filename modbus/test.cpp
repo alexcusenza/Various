@@ -12,10 +12,14 @@ using namespace std;
 const char * IP_PLC = "172.16.17.75";
 const int UID_PLC = 0;
 
+const char * IP_SICK0 = "172.16.17.50";
+const int UID_SICK0 = 0;
+
 int main (void)
 {
     int ret;
     clModbusTCP cBeckhoff = clModbusTCP(UID_PLC, IP_PLC);
+    clModbusTCP cSickcpu0 = clModbusTCP(UID_SICK0, IP_SICK0);
 
     unsigned char * in;
     unsigned char * out;
@@ -23,7 +27,7 @@ int main (void)
     unsigned char arrout[4] = { 1, 0, 1, 0 };
     out = arrout;
 
-    while (ret > 0)
+    while (ret >= 0)
     {
         ret = cBeckhoff.read_02h(0, 1, in);
         if (ret < 0)

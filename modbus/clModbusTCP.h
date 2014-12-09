@@ -90,12 +90,12 @@ private:
         int,                // function
         int,                // length
         int,                // address
-        int,                // number of bytes
-        unsigned char *);   // destination
+        int);                // number of bytes
+
 
     int _checkresponse(
-        const int,          // function
-        unsigned char *);   // response message
+        const int );         // function
+
 
     clSocket * mp_socket;
     int m_uid;
@@ -107,6 +107,7 @@ private:
     unsigned char * rsp_msg;
     int rsp_length;
 
+    int ret_error;
 
 };
 

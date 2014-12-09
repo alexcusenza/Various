@@ -1,5 +1,5 @@
 /*
- * clModbusTCP.cpp
+ * clModbusTCP.cvgfdx   pp
  *
  *  Created on: Oct 22, 2014
  *      Author: jbw
@@ -16,10 +16,10 @@
  */
 
 clModbusTCP::clModbusTCP(
-    int uid,
-    const char * ipPLC):
-    m_uid(uid),
-    m_ip(ipPLC)
+    int uid,                // 1
+    const char * ipPLC):    // 2
+    m_uid(uid),             // 3
+    m_ip(ipPLC)             // 4
 {
     mp_socket = new clSocket(m_ip);
 
@@ -41,7 +41,10 @@ clModbusTCP::~clModbusTCP()
 
 int clModbusTCP::read_02h(int addr, int numbits, unsigned char *dest)
 {
+    int ret;
+    int bytecount;
     const int func = MODBUS_FC_READ_DISCRETE_INPUTS;
+    int length = 6;             // 6 bytes = 1(uid) + 1(func) + 2(addr) + 2(bits)
 
     // Check max of data num_
     if (numbits > MODBUS_MAX_READ_BITS)
@@ -54,10 +57,9 @@ int clModbusTCP::read_02h(int addr, int numbits, unsigned char *dest)
     // Build Message
     req_length = _buildmessage(
             func,
-            6,                  // Length: 6 bytes = 1(uid) + 1(func) + 2(addr) + 2(bits)
+            length,
             addr,
-            numbits,
-            req_msg);
+            numbits);
 
     // Send Request Message
     ret = mp_socket->SendMessage(req_msg, req_length);
@@ -69,10 +71,7 @@ int clModbusTCP::read_02h(int addr, int numbits, unsigned char *dest)
         if (ret == -1)
             return -1;
 
-        int bytecount;
-        bytecount = _checkresponse(
-                func,
-                rsp_msg);
+        bytecount = _checkresponse(func);
 
         if (bytecount < 0)
             return -1;
@@ -96,7 +95,10 @@ int clModbusTCP::read_02h(int addr, int numbits, unsigned char *dest)
 
 int clModbusTCP::read_03h(int addr, int numwords, unsigned char *dest)
 {
+    int ret;
+    int bytecount;
     const int func = MODBUS_FC_READ_HOLDING_REGISTERS;
+    int length = 6;             // 6 bytes = 1(uid) + 1(func) + 2(addr) + 2(bits)
 
     // Check max of data num_
     if (numwords > MODBUS_MAX_READ_REGISTERS)
@@ -109,10 +111,9 @@ int clModbusTCP::read_03h(int addr, int numwords, unsigned char *dest)
     // Build Message
     req_length = _buildmessage(
             func,
-            6,                  // 6 bytes = 1(uid) + 1(func) + 2(addr) + 2(bits)
+            length,
             addr,
-            numwords,
-            req_msg);
+            numwords);
 
     // Send Request Message
     ret = mp_socket->SendMessage(req_msg, req_length);
@@ -124,10 +125,7 @@ int clModbusTCP::read_03h(int addr, int numwords, unsigned char *dest)
         if (ret == -1)
             return -1;
 
-        int bytecount;
-        bytecount = _checkresponse(
-                func,
-                rsp_msg);
+        bytecount = _checkresponse(func);
 
         if (bytecount < 0)
             return -1;
@@ -151,9 +149,11 @@ int clModbusTCP::read_03h(int addr, int numwords, unsigned char *dest)
 
 int clModbusTCP::write_0fh(int addr, int numbits, unsigned char *src)
 {
+    int ret;
+    int bytecount;
     const int func = MODBUS_FC_WRITE_MULTIPLE_COILS;
     int numbytes = (numbits / 8) + ((numbits % 8) ? 1 : 0);
-    int length = 7 + numbytes;
+    int length = 7 + numbytes;      // 7 bytes = 1(uid) + 1(func) + 2(addr) + 2(bits) + 1(bytes)
 
     // Check max of data num_
     if (numbits > MODBUS_MAX_WRITE_BITS)
@@ -166,10 +166,9 @@ int clModbusTCP::write_0fh(int addr, int numbits, unsigned char *src)
     // Build Message
     req_length = _buildmessage(
             func,
-            length,             // 7 bytes = 1(uid) + 1(func) + 2(addr) + 2(bits) + 1(bytes)
+            length,
             addr,
-            numbits,
-            req_msg);
+            numbits);
     req_msg[req_length++] = numbytes;
 
 
@@ -188,10 +187,7 @@ int clModbusTCP::write_0fh(int addr, int numbits, unsigned char *src)
         if (ret == -1)
             return -1;
 
-        int bytecount;
-        bytecount = _checkresponse(
-                func,
-                rsp_msg);
+        bytecount = _checkresponse(func);
 
     }
     return ret;
@@ -207,9 +203,11 @@ int clModbusTCP::write_0fh(int addr, int numbits, unsigned char *src)
 
 int clModbusTCP::write_10h(int addr, int numwords, unsigned char *src)
 {
+    int ret;
+    int bytecount;
     const int func = MODBUS_FC_WRITE_MULTIPLE_REGISTERS;
     int numbytes = numwords * 2;
-    int length = 7 + numbytes;
+    int length = 7 + numbytes;      // 7 bytes = 1(uid) + 1(func) + 2(addr) + 2(bits) + 1(bytes)
 
     // Check max of data num_
     if (numwords > MODBUS_MAX_WRITE_REGISTERS)
@@ -222,10 +220,9 @@ int clModbusTCP::write_10h(int addr, int numwords, unsigned char *src)
     // Build Message
     req_length = _buildmessage(
             func,
-            7,                  // 7 bytes = 1(uid) + 1(func) + 2(addr) + 2(bits) + 1(bytes)
+            7,
             addr,
-            numwords,
-            req_msg);
+            numwords);
     req_msg[req_length++] = numbytes;
 
     for (int i = 0; i < numbytes; i++)
@@ -244,10 +241,7 @@ int clModbusTCP::write_10h(int addr, int numwords, unsigned char *src)
         if (ret == -1)
             return -1;
 
-        int bytecount;
-        bytecount = _checkresponse(
-                func,
-                rsp_msg);
+        bytecount = _checkresponse(func);
 
     }
 
@@ -265,9 +259,11 @@ int clModbusTCP::_buildmessage(
     int func,
     int len,
     int addr,
-    int count,
-    unsigned char *buf)
+    int count)
 {
+    unsigned char * buf;
+    buf = req_msg;
+
     // Transaction ID
     buf[0] = 0;
     buf[1] = 0;
@@ -281,10 +277,10 @@ int clModbusTCP::_buildmessage(
     buf[5] = len & 0x0ff;
 
     // Unit
-    buf[6] = m_uid;
+    buf[6] = (unsigned char) m_uid;
 
     // Function
-    buf[7] = func;
+    buf[7] = (unsigned char) func;
 
     // Address
     buf[8] = addr >> 8;
@@ -306,18 +302,22 @@ int clModbusTCP::_buildmessage(
  */
 
 int clModbusTCP::_checkresponse(
-    const int func,
-    unsigned char * rsp)
+    const int func)
 {
-    int uid = rsp[7];
-    int function = rsp[8];
-    int bytecount = rsp[9];
+    int uid = rsp_msg[7];
+    int function = rsp_msg[8];
+    int bytecount = rsp_msg[9];
+    ret_error = 0;
 
-    if (uid != m_uid ||
-            function != func)
+    if (uid != m_uid)
     {
-        printf("Modbus Error: UID and/or Function Not Matching");
-
+        printf("Modbus Error: UID Error");
+        return -1;
+    }
+    else if (function == func + 0x0080)
+    {
+        printf("Modbus Error: Function Error");
+        ret_error = function;
         return -1;
     }
 
