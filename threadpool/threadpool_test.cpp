@@ -10,7 +10,7 @@
 
 using namespace std;
 
-const int MAX_TASKS = 5;
+const int MAX_TASKS = 10;
 const int NUMTHREADS = 3;
 
 void hello(void* arg)
@@ -18,21 +18,21 @@ void hello(void* arg)
     class clTimeSpec cTimeHello;
 
     int cnt;
-    int * x = (int*) arg;
+    int * x = (int *) arg;
 
     cout << "Hello #" << *x <<" Started"<< endl;
-    cTimeHello.GetTimePrev();
+    //cTimeHello.GetTimePrev();
 
     for (int i=0; i<1000000; i++)
         cnt++;
 
     cnt = cnt * *x;
-    cout << "Hello #" << *x <<" Finished "<<  endl;
+    //cout << "Hello #" << *x <<" Finished "<<  endl;
 
-    cTimeHello.GetTimeCurr();
-    double fResult = cTimeHello.TimeDiffCombine();
+    //cTimeHello.GetTimeCurr();
+    //double fResult = cTimeHello.TimeDiffCombine();
 
-    cout << "!!! HELLO #" << *x << " Class DiffTime: " << fResult << endl;
+    //cout << "!!! HELLO #" << *x << " Class DiffTime: " << fResult << endl;
 }
 
 int main(int argc, char* argv[])
