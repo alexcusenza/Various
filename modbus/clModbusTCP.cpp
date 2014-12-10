@@ -22,7 +22,7 @@ clModbusTCP::clModbusTCP(
     m_ip(ipPLC)             // 4
 {
     mp_socket = new clSocket(m_ip);
-    req_msg = new unsigned char[512];
+    req_msg = new unsigned char[256];
 }
 
 clModbusTCP::~clModbusTCP()
@@ -150,7 +150,7 @@ int clModbusTCP::read_03h(int addr, int numwords, unsigned char *dest)
 int clModbusTCP::write_0fh(int addr, int numbits, unsigned char *src)
 {
     int ret;
-    int bytecount;
+
     const int func = MODBUS_FC_WRITE_MULTIPLE_COILS;
     int numbytes = (numbits / 8) + ((numbits % 8) ? 1 : 0);
     int length = 7 + numbytes;      // 7 bytes = 1(uid) + 1(func) + 2(addr) + 2(bits) + 1(bytes)
@@ -187,7 +187,7 @@ int clModbusTCP::write_0fh(int addr, int numbits, unsigned char *src)
         if (ret == -1)
             return -1;
 
-        bytecount = _checkresponse(func);
+        ret = _checkresponse(func);
 
     }
     return ret;
@@ -204,7 +204,7 @@ int clModbusTCP::write_0fh(int addr, int numbits, unsigned char *src)
 int clModbusTCP::write_10h(int addr, int numwords, unsigned char *src)
 {
     int ret;
-    int bytecount;
+
     const int func = MODBUS_FC_WRITE_MULTIPLE_REGISTERS;
     int numbytes = numwords * 2;
     int length = 7 + numbytes;      // 7 bytes = 1(uid) + 1(func) + 2(addr) + 2(bits) + 1(bytes)
@@ -220,7 +220,7 @@ int clModbusTCP::write_10h(int addr, int numwords, unsigned char *src)
     // Build Message
     req_length = _buildmessage(
             func,
-            7,
+            length,
             addr,
             numwords);
     req_msg[req_length++] = numbytes;
@@ -241,7 +241,7 @@ int clModbusTCP::write_10h(int addr, int numwords, unsigned char *src)
         if (ret == -1)
             return -1;
 
-        bytecount = _checkresponse(func);
+        ret = _checkresponse(func);
 
     }
 
@@ -261,35 +261,31 @@ int clModbusTCP::_buildmessage(
     int addr,
     int count)
 {
-    unsigned char * buf;
-
-    buf = req_msg;
-
     // Transaction ID
-    buf[0] = 0;
-    buf[1] = 0;
+    req_msg[0] = 0;
+    req_msg[1] = 0;
 
     // Protocol
-    buf[2] = 0;
-    buf[3] = 0;
+    req_msg[2] = 0;
+    req_msg[3] = 0;
 
     // Length
-    buf[4] = len >> 8;
-    buf[5] = len & 0x0ff;
+    req_msg[4] = len >> 8;
+    req_msg[5] = len & 0x0ff;
 
     // Unit
-    buf[6] = (unsigned char) m_uid;
+    req_msg[6] = (unsigned char) m_uid;
 
     // Function
-    buf[7] = (unsigned char) func;
+    req_msg[7] = (unsigned char) func;
 
     // Address
-    buf[8] = addr >> 8;
-    buf[9] = addr & 0x00ff;
+    req_msg[8] = addr >> 8;
+    req_msg[9] = addr & 0x00ff;
 
     // Number of bytes
-    buf[10] = count >> 8;
-    buf[11] = count & 0x0ff;
+    req_msg[10] = count >> 8;
+    req_msg[11] = count & 0x0ff;
 
     return MODBUS_TCP_PRESET_REQ_LENGTH;
 

@@ -22,20 +22,18 @@ int main (void)
     clModbusTCP cSickcpu0 = clModbusTCP(UID_SICK0, IP_SICK0);
 
     unsigned char in[128];
-    unsigned char out[128];
+    unsigned char out[] = { 1, 0, 1, 0 };
 
-    unsigned char arrout[] = { 1, 0, 1, 0 };
-    out = arrout;
 
     while (ret >= 0)
     {
         ret = cBeckhoff.read_02h(0, 1, in);
         if (ret < 0)
-            printf("read error");
+            printf("read error \n");
 
         ret = cBeckhoff.write_0fh(0, 4, out);
         if (ret < 0)
-            printf("write error");
+            printf("write error \n");
 
         sleep(1);
     }
