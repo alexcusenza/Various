@@ -21,10 +21,10 @@ int main (void)
     clModbusTCP cBeckhoff = clModbusTCP(UID_PLC, IP_PLC);
     clModbusTCP cSickcpu0 = clModbusTCP(UID_SICK0, IP_SICK0);
 
-    unsigned char * in;
-    unsigned char * out;
+    unsigned char in[128];
+    unsigned char out[128];
 
-    unsigned char arrout[4] = { 1, 0, 1, 0 };
+    unsigned char arrout[] = { 1, 0, 1, 0 };
     out = arrout;
 
     while (ret >= 0)

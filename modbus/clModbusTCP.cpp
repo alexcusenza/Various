@@ -22,7 +22,7 @@ clModbusTCP::clModbusTCP(
     m_ip(ipPLC)             // 4
 {
     mp_socket = new clSocket(m_ip);
-
+    req_msg = new unsigned char[512];
 }
 
 clModbusTCP::~clModbusTCP()
@@ -262,6 +262,7 @@ int clModbusTCP::_buildmessage(
     int count)
 {
     unsigned char * buf;
+
     buf = req_msg;
 
     // Transaction ID
