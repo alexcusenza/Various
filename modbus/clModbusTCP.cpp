@@ -8,8 +8,7 @@
 #include "clModbusTCP.h"
 #include <iostream>
 
-/*
- * ==============================================
+/* ==============================================
  * Constructor / Destructor
  *
  * ==============================================
@@ -17,34 +16,37 @@
 
 clModbusTCP::clModbusTCP(
     int uid,                // 1
-    const char * ipPLC):    // 2
-    m_uid(uid),             // 3
-    m_ip(ipPLC)             // 4
+    const char * ipAddr):    // 2
+    m_uid(uid)             // 3
 {
-    mp_socket = new clSocket(m_ip);
-    req_msg = new unsigned char[256];
+    mp_socket = new clSocket(ipAddr);
+    req_msg = new unsigned char[128];
+    rsp_msg = new unsigned char[128];
 }
 
 clModbusTCP::~clModbusTCP()
 {
-    // TODO Auto-generated destructor stub
+    delete req_msg;
+    delete rsp_msg;
 }
 
-
-/*
- * ==============================================
+/* ==============================================
  * Modbus Function 02h
  * READ DISCRETE INPUTS
  *
  * ==============================================
  */
 
-int clModbusTCP::read_02h(int addr, int numbits, unsigned char *dest)
+int clModbusTCP::read_02h(
+    int addr,
+    int numbits,
+    unsigned char *dest)
 {
-    int ret;
+    int retval;
     int bytecount;
     const int func = MODBUS_FC_READ_DISCRETE_INPUTS;
-    int length = 6;             // 6 bytes = 1(uid) + 1(func) + 2(addr) + 2(bits)
+    int length = MODBUS_TCP_HEADER_READ_LENGTH;
+    int numbytes = (numbits / 8) + ((numbits % 8) ? 1 : 0);
 
     // Check max of data num_
     if (numbits > MODBUS_MAX_READ_BITS)
@@ -61,44 +63,51 @@ int clModbusTCP::read_02h(int addr, int numbits, unsigned char *dest)
             addr,
             numbits);
 
+    rsp_length = MODBUS_TCP_PRESET_RSP_LENGTH + numbytes;
+
     // Send Request Message
-    ret = mp_socket->SendMessage(req_msg, req_length);
-    if (ret > 0)
+    retval = mp_socket->SendMessage(req_msg, req_length);
+    if (retval < 0)
+        return -1;
+
+    // Receive Response Message
+    retval = mp_socket->ReceiveMessage(rsp_msg, rsp_length);
+    if (retval < 0)
+        return -1;
+
+    // Check Response
+    retval = _checkresponse(func);
+    if (retval < 0)
+        return -1;
+
+    bytecount = retval;
+
+    // Response Message
+    for (int i = 0; i < bytecount; i++)
     {
-        // Receive Response Message
-        ret = mp_socket->ReceiveMessage(rsp_msg, rsp_length);
-
-        if (ret == -1)
-            return -1;
-
-        bytecount = _checkresponse(func);
-
-        if (bytecount < 0)
-            return -1;
-
-        for (int i = 0; i < bytecount; i++)
-        {
-            dest[i] = rsp_msg[8+i];
-        }
+        dest[i] = rsp_msg[9+i];
     }
 
-    return ret;
+    return 1;
 }
 
-/*
- * ==============================================
+/* ==============================================
  * Modbus Function 03h
  * READ HOLDING REGISTERS
  *
  * ==============================================
  */
 
-int clModbusTCP::read_03h(int addr, int numwords, unsigned char *dest)
+int clModbusTCP::read_03h(
+    int addr,
+    int numwords,
+    unsigned char *dest)
 {
-    int ret;
+    int retval;
     int bytecount;
     const int func = MODBUS_FC_READ_HOLDING_REGISTERS;
-    int length = 6;             // 6 bytes = 1(uid) + 1(func) + 2(addr) + 2(bits)
+    int length = MODBUS_TCP_HEADER_READ_LENGTH;
+    int numbytes = numwords * 2;
 
     // Check max of data num_
     if (numwords > MODBUS_MAX_READ_REGISTERS)
@@ -115,45 +124,51 @@ int clModbusTCP::read_03h(int addr, int numwords, unsigned char *dest)
             addr,
             numwords);
 
+    rsp_length = MODBUS_TCP_PRESET_RSP_LENGTH + numbytes;
+
     // Send Request Message
-    ret = mp_socket->SendMessage(req_msg, req_length);
-    if (ret > 0)
+    retval = mp_socket->SendMessage(req_msg, req_length);
+    if (retval < 0)
+        return -1;
+
+    // Receive Response Message
+    retval = mp_socket->ReceiveMessage(rsp_msg, rsp_length);
+    if (retval < 0)
+        return -1;
+
+    // Check Response
+    retval = _checkresponse(func);
+    if (retval < 0)
+        return -1;
+
+    bytecount = retval;
+
+    // Response Message
+    for (int i = 0; i < bytecount; i++)
     {
-        // Receive Response Message
-        ret = mp_socket->ReceiveMessage(rsp_msg, rsp_length);
-
-        if (ret == -1)
-            return -1;
-
-        bytecount = _checkresponse(func);
-
-        if (bytecount < 0)
-            return -1;
-
-        for (int i = 0; i < bytecount; i++)
-        {
-            dest[i] = (rsp_msg[8+i*2] << 8) | rsp_msg[9+i*2];
-        }
+        dest[i] = (rsp_msg[9+i*2] << 8) | rsp_msg[10+i*2];
     }
-    return ret;
+
+    return 1;
 }
 
 
-/*
- * ==============================================
+/* ==============================================
  * Modbus Function 0fh
  * WRITE MULTIPLE COILS
  *
  * ==============================================
  */
 
-int clModbusTCP::write_0fh(int addr, int numbits, unsigned char *src)
+int clModbusTCP::write_0fh(
+    int addr,
+    int numbits,
+    unsigned char *src)
 {
-    int ret;
-
+    int retval;
     const int func = MODBUS_FC_WRITE_MULTIPLE_COILS;
     int numbytes = (numbits / 8) + ((numbits % 8) ? 1 : 0);
-    int length = 7 + numbytes;      // 7 bytes = 1(uid) + 1(func) + 2(addr) + 2(bits) + 1(bytes)
+    int length = MODBUS_TCP_HEADER_WRITE_LENGTH + numbytes;
 
     // Check max of data num_
     if (numbits > MODBUS_MAX_WRITE_BITS)
@@ -169,45 +184,51 @@ int clModbusTCP::write_0fh(int addr, int numbits, unsigned char *src)
             length,
             addr,
             numbits);
+
     req_msg[req_length++] = numbytes;
 
-
+    // Add data to message
     for (int i = 0; i < numbytes; i++)
     {
-        req_msg[req_length+i] = src[i];
+        req_msg[req_length++] = src[i];
     }
+
+    rsp_length = MODBUS_TCP_PRESET_RSP_LENGTH;
 
     // Send Request Message
-    ret = mp_socket->SendMessage(req_msg, req_length);
-    if (ret > 0)
-    {
-        // Receive Response Message
-        ret = mp_socket->ReceiveMessage(rsp_msg, rsp_length);
+    retval = mp_socket->SendMessage(req_msg, req_length);
+    if (retval < 0)
+        return -1;
 
-        if (ret == -1)
-            return -1;
+    // Receive Response Message
+    retval = mp_socket->ReceiveMessage(rsp_msg, rsp_length);
+    if (retval < 0)
+        return -1;
 
-        ret = _checkresponse(func);
+    // Check Response
+    retval = _checkresponse(func);
+    if (retval < 0)
+        return -1;
 
-    }
-    return ret;
+    return 1;
 }
 
-/*
- * ==============================================
+/* ==============================================
  * Modbus Function 10h
  * WRITE MULTIPLE REGISTERS
  *
  * ==============================================
  */
 
-int clModbusTCP::write_10h(int addr, int numwords, unsigned char *src)
+int clModbusTCP::write_10h(
+    int addr,
+    int numwords,
+    unsigned char *src)
 {
-    int ret;
-
+    int retval;
     const int func = MODBUS_FC_WRITE_MULTIPLE_REGISTERS;
     int numbytes = numwords * 2;
-    int length = 7 + numbytes;      // 7 bytes = 1(uid) + 1(func) + 2(addr) + 2(bits) + 1(bytes)
+    int length = MODBUS_TCP_HEADER_WRITE_LENGTH + numbytes;
 
     // Check max of data num_
     if (numwords > MODBUS_MAX_WRITE_REGISTERS)
@@ -231,27 +252,29 @@ int clModbusTCP::write_10h(int addr, int numwords, unsigned char *src)
         req_msg[req_length++] = src[i] & 0x00FF;
     }
 
+    rsp_length = MODBUS_TCP_PRESET_RSP_LENGTH;
+
     // Send Request Message
-    ret = mp_socket->SendMessage(req_msg, req_length);
-    if (ret > 0)
-    {
-        // Receive Response Message
-        ret = mp_socket->ReceiveMessage(rsp_msg, rsp_length);
+    retval = mp_socket->SendMessage(req_msg, req_length);
+    if (retval < 0)
+        return -1;
 
-        if (ret == -1)
-            return -1;
+    // Receive Response Message
+    retval = mp_socket->ReceiveMessage(rsp_msg, rsp_length);
+    if (retval < 0)
+        return -1;
 
-        ret = _checkresponse(func);
+    // Check Response
+    retval = _checkresponse(func);
+    if (retval < 0)
+        return -1;
 
-    }
-
-    return ret;
+    return 1;
 }
 
-/*
- * ==============================================
+/* ==============================================
  * _buildmessage
- *
+ * PRIVATE
  * ==============================================
  */
 
@@ -271,7 +294,7 @@ int clModbusTCP::_buildmessage(
 
     // Length
     req_msg[4] = len >> 8;
-    req_msg[5] = len & 0x0ff;
+    req_msg[5] = len & 0x00ff;
 
     // Unit
     req_msg[6] = (unsigned char) m_uid;
@@ -285,39 +308,34 @@ int clModbusTCP::_buildmessage(
 
     // Number of bytes
     req_msg[10] = count >> 8;
-    req_msg[11] = count & 0x0ff;
+    req_msg[11] = count & 0x00ff;
 
     return MODBUS_TCP_PRESET_REQ_LENGTH;
-
 }
 
-/*
- * ==============================================
+/* ==============================================
  * _checkresponse
- *
+ * PRIVATE
  * ==============================================
  */
 
 int clModbusTCP::_checkresponse(
     const int func)
 {
-    int uid = rsp_msg[7];
-    int function = rsp_msg[8];
-    int bytecount = rsp_msg[9];
-    ret_error = 0;
+    int uid = rsp_msg[6];
+    int function = rsp_msg[7];
+    int bytecount = rsp_msg[8];
 
     if (uid != m_uid)
     {
-        printf("Modbus Error: UID Error");
+        printf("Modbus Error: UID Error \n");
         return -1;
     }
     else if (function == func + 0x0080)
     {
-        printf("Modbus Error: Function Error");
-        ret_error = function;
+        printf("Modbus Error: Function %x, error %d, %d \n", function, rsp_msg[8]);
         return -1;
     }
 
     return bytecount;
-
 }

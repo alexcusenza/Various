@@ -24,9 +24,31 @@
 #define MODBUS_FC_MASK_WRITE_REGISTER       0x16
 #define MODBUS_FC_WRITE_AND_READ_REGISTERS  0x17
 
-#define MODBUS_TCP_HEADER_LENGTH      7
-#define MODBUS_TCP_PRESET_REQ_LENGTH 12
-#define MODBUS_TCP_PRESET_RSP_LENGTH  8
+/* ============================================================================
+ * Modbus Protocol
+ *              BYTES
+ * Transaction  - 2
+ * Protocol     - 2
+ * Length       - 2     -> indicate the number of bytes following
+ * UID          - 1
+ * Function     - 1
+ * Address      - 2
+ * Size         - 2
+ * Size         - 1     -> for writes only
+ * ============================================================================
+ */
+
+#define MODBUS_TCP_HEADER_READ_LENGTH       6
+// 6 bytes = 1(uid) + 1(func) + 2(addr) + 2(bits)
+
+#define MODBUS_TCP_HEADER_WRITE_LENGTH      7
+// 7 bytes = 1(uid) + 1(func) + 2(addr) + 2(bits/bytes) + 1(bytes/words)
+
+#define MODBUS_TCP_PRESET_REQ_LENGTH        12
+// 12 bytes = transid,2 + protoid,2 + length,2 + uid,1 + func,1 + addr,2 + size,2
+
+#define MODBUS_TCP_PRESET_RSP_LENGTH        12
+// 9 bytes = transid,2 + protoid,2 + length,2 + uid,1 + func,1 + addr,2 + size,2
 
 #define MIN_REQ_LENGTH 12
 #define MAX_RSP_LENGTH 260
@@ -92,14 +114,11 @@ private:
         int,                // address
         int);                // number of bytes
 
-
     int _checkresponse(
         const int );         // function
 
-
     clSocket * mp_socket;
     int m_uid;
-    const char * m_ip;
 
     int ret;
     unsigned char * req_msg;
