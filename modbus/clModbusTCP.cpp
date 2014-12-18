@@ -15,9 +15,9 @@
  */
 
 clModbusTCP::clModbusTCP(
-    int uid,                // 1
-    const char * ipAddr):    // 2
-    m_uid(uid)             // 3
+    int uid,
+    const char * ipAddr):
+    m_uid(uid)
 {
     mp_socket = new clSocket(ipAddr);
     req_msg = new unsigned char[128];
@@ -333,7 +333,7 @@ int clModbusTCP::_checkresponse(
     }
     else if (function == func + 0x0080)
     {
-        printf("Modbus Error: Function %x, error %d, %d \n", function, rsp_msg[8]);
+        printf("Modbus Error: Function %x, error %d \n", function, rsp_msg[8]);
         return -1;
     }
 
