@@ -22,7 +22,7 @@ clSocket::~clSocket()
 
 int clSocket::_disconnect()
 {
-    if (socketid != -1)
+    if (socketid >= 0)
     {
         close(socketid);
     }
@@ -34,7 +34,7 @@ int clSocket::_disconnect()
 
 int clSocket::_isconnected()
 {
-    if (socketid == -1)
+    if (socketid < 0)
     {
         printf("socketid = -1 \n");
         return -1;
@@ -66,7 +66,6 @@ int clSocket::_select(int timeout)
         printf("Select Function TimeOut \n");
         return -1;
     }
-    printf("Select Function return: %d \n", retval);
 
     return 1;
 }
@@ -76,7 +75,7 @@ int clSocket::Connect()
     struct sockaddr_in socketname;
     int ret;
 
-    _disconnect();
+    //_disconnect();
 
     socketid = socket(AF_INET, SOCK_STREAM, 0);
     if (socketid < 0)
