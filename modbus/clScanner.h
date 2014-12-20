@@ -24,6 +24,7 @@ public:
         int);               // write mem size location
     virtual ~clScanner();
 
+    void SetWriteData(unsigned char *);
     void Execute();
 
 private:
@@ -35,6 +36,9 @@ private:
     int m_readmemsize;
     int m_writememaddr;
     int m_writememsize;
+
+    unsigned char * in;
+    unsigned char * out;
 };
 
 #endif /* CLSCANNER_H_ */

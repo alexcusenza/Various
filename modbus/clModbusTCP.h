@@ -120,13 +120,10 @@ private:
     clSocket * mp_socket;
     int m_uid;
 
-    int ret;
     unsigned char * req_msg;
     int req_length;
     unsigned char * rsp_msg;
     int rsp_length;
-
-    int ret_error;
 
 };
 

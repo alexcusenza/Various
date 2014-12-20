@@ -21,39 +21,28 @@ clScanner::clScanner(
 {
     mp_modbus = new clModbusTCP(uid, ipaddr);
     scannerthread = std::thread(&clScanner::Execute, this);
+
+    out = new unsigned char[8];
 }
 
 clScanner::~clScanner()
 {
     scannerthread.join();
     delete mp_modbus;
+    delete out;
+}
+
+void clScanner::SetWriteData(unsigned char * data)
+{
+    out =  data;
 }
 
 void clScanner::Execute()
 {
     int ret=1;
-    int OUTBITS = 4;
-    bool toggle = true;
-    int cnt = 0;
-
-    unsigned char in[16];
-    unsigned char out[] = {1,0,0,0} ;
 
     while(ret>0)
     {
-        // TOGGLE OUTPUT
-        if (toggle == true)
-            out[0] = out[0] << 1;
-        else
-            out[0] = out[0] >> 1;
-
-        cnt++;
-        if (cnt == OUTBITS-1)
-        {
-            toggle = !toggle;
-            cnt = 0;
-        }
-
         // READ
         ret = mp_modbus->read_02h(m_readmemaddr, m_readmemsize, in);
         if (ret < 0)
