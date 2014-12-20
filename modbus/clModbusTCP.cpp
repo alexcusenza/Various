@@ -1,5 +1,5 @@
 /*
- * clModbusTCP.cvgfdx   pp
+ * clModbusTCP.cpp
  *
  *  Created on: Oct 22, 2014
  *      Author: jbw
@@ -328,12 +328,12 @@ int clModbusTCP::_checkresponse(
 
     if (uid != m_uid)
     {
-        printf("Modbus Error: UID Error \n");
+        printf("Modbus UID Error \n");
         return -1;
     }
     else if (function == func + 0x0080)
     {
-        printf("Modbus Error: Function %x, error %d \n", function, rsp_msg[8]);
+        printf("Modbus Function %x, error %d \n", function, bytecount);
         return -1;
     }
 

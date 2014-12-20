@@ -7,7 +7,6 @@
 
 #include "clScanner.h"
 
-
 clScanner::clScanner(
     int uid,
     const char * ipaddr,
@@ -21,17 +20,18 @@ clScanner::clScanner(
     m_writememsize(writememsize)
 {
     mp_modbus = new clModbusTCP(uid, ipaddr);
-    std::thread scannerthread(&clScanner::Execute, this);
+    scannerthread = std::thread(&clScanner::Execute, this);
 }
 
 clScanner::~clScanner()
 {
-    // TODO Auto-generated destructor stub
+    scannerthread.join();
+    delete mp_modbus;
 }
 
 void clScanner::Execute()
 {
-    int ret;
+    int ret=1;
     int OUTBITS = 4;
     bool toggle = true;
     int cnt = 0;
@@ -59,7 +59,7 @@ void clScanner::Execute()
         if (ret < 0)
         {
             printf("read error \n");
-            //return -1;
+           //return -1;
         }
 
         // WRITE
@@ -71,13 +71,14 @@ void clScanner::Execute()
         }
 
         // PRINT DISPLAY
-        for (int i=0; i<1; i++)
+/*        for (int i=0; i<1; i++)
             printf("[%d]:%x ", i, in[i]);
         printf("\n");
 
         for (int i=0; i<1; i++)
             printf("[%d]:%x ", i, out[i]);
         printf("\n");
+ */
     }
 
 }

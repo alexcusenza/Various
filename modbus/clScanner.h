@@ -19,8 +19,8 @@ public:
         int,                // uid
         const char *,       // ip addr
         int,                // read mem addr location
-        int,                // write mem addr location
         int,                // read mem size location
+        int,                // write mem addr location
         int);               // write mem size location
     virtual ~clScanner();
 
