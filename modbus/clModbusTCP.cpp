@@ -23,6 +23,7 @@ int bitstobytes(int numbits)
 clModbusTCP::clModbusTCP(
     int uid,
     const char * ipAddr):
+    clMemAccess(),
     m_uid(uid)
 {
     mp_socket = new clSocket(ipAddr);

@@ -8,6 +8,7 @@
 #ifndef CLMODBUSTCP_H_
 #define CLMODBUSTCP_H_
 
+#include "clMemAccess.h"
 #include "clSocket.h"
 
 
@@ -81,7 +82,7 @@
 
 
 
-class clModbusTCP
+class clModbusTCP : public clMemAccess
 {
 public:
     clModbusTCP(int,  const char *);
