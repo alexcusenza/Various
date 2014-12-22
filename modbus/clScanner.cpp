@@ -22,6 +22,7 @@ clScanner::clScanner(
     mp_modbus = new clModbusTCP(uid, ipaddr);
     scannerthread = std::thread(&clScanner::Execute, this);
 
+    in = new unsigned char[8];
     out = new unsigned char[8];
 }
 
@@ -29,6 +30,7 @@ clScanner::~clScanner()
 {
     scannerthread.join();
     delete mp_modbus;
+    delete in;
     delete out;
 }
 
@@ -59,15 +61,6 @@ void clScanner::Execute()
             //return -1;
         }
 
-        // PRINT DISPLAY
-/*        for (int i=0; i<1; i++)
-            printf("[%d]:%x ", i, in[i]);
-        printf("\n");
-
-        for (int i=0; i<1; i++)
-            printf("[%d]:%x ", i, out[i]);
-        printf("\n");
- */
     }
 
 }
