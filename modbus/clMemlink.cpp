@@ -12,8 +12,8 @@ clMemlink::clMemlink(
     const char * ipaddr)
 {
     mp_socket = new clSocket(ipaddr);
-    req_msg = new unsigned char[128];
-    rsp_msg = new unsigned char[128];
+    req_msg = new unsigned int[128];
+    rsp_msg = new unsigned int[128];
 }
 
 clMemlink::~clMemlink()
@@ -23,13 +23,41 @@ clMemlink::~clMemlink()
 }
 
 
-
 int clMemlink::read(
     int addr,
     int numwords,
     unsigned char * dest)
 {
+    int retval;
+    const int func = 0x52;
+    int length = 0;
 
+    // Build Message
+    req_length = _buildmessage(
+            func,
+            length,
+            addr,
+            numwords);
+
+    // Send Request Message
+    retval = mp_socket->SendMessage(req_msg, req_length);
+    if (retval < 0)
+        return -1;
+
+    // Receive Response Message
+    retval = mp_socket->ReceiveMessage(rsp_msg, rsp_length);
+    if (retval < 0)
+        return -1;
+
+    // Check Response
+    retval = _checkresponse(func);
+    if (retval < 0)
+        return -1;
+
+
+    mp_socket->SendMessage(req_msg, req_length);
+
+    mp_socket->ReceiveMessage(rsp_msg, rsp_length);
     return 1;
 }
 
@@ -40,6 +68,9 @@ int clMemlink::write(
     unsigned char * dest)
 {
 
+    mp_socket->SendMessage(req_msg, req_length);
+
+    mp_socket->ReceiveMessage(rsp_msg, rsp_length);
     return 1;
 }
 
@@ -62,7 +93,7 @@ int clMemlink::_buildmessage(
     req_msg[7] = len;
 
     // function - read or write
-    req_msg[8] = 0x1b;
+    req_msg[8] = 0x1B;
     req_msg[9] = func;
 
     // Address
@@ -73,6 +104,11 @@ int clMemlink::_buildmessage(
     req_msg[10] = count >> 8;
     req_msg[11] = count & 0x00ff;
 
-    return 1;
+    return 12;
 }
 
+int clMemlink::_checkresponse(
+    int func)
+{
+
+}

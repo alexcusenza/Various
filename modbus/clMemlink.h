@@ -39,9 +39,9 @@ private:
 
     clSocket * mp_socket;
 
-    unsigned char * req_msg;
+    unsigned int * req_msg;
     int req_length;
-    unsigned char * rsp_msg;
+    unsigned int * rsp_msg;
     int rsp_length;
 
 };
