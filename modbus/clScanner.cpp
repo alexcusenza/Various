@@ -34,9 +34,12 @@ clScanner::~clScanner()
     delete out;
 }
 
+
 void clScanner::SetWriteData(unsigned char * data)
 {
+    scannermutex.lock();
     out =  data;
+    scannermutex.unlock();
 }
 
 void clScanner::Execute()
@@ -60,7 +63,5 @@ void clScanner::Execute()
             printf("write error \n");
             //return -1;
         }
-
     }
-
 }

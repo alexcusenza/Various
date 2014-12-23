@@ -10,6 +10,7 @@
 
 #include "clModbusTCP.h"
 #include <thread>
+#include <mutex>
 #include <iostream>
 
 class clScanner
@@ -31,6 +32,7 @@ private:
 
     clModbusTCP  * mp_modbus;
     std::thread scannerthread;
+    std::mutex scannermutex;
 
     int m_readmemaddr;
     int m_readmemsize;

@@ -73,7 +73,17 @@ int main (void)
         }
         cBeckhoff2.SetWriteData(out2);
 
+
+        for (int i=0; i<1; i++)
+        {
+            //printf("in [%d]:%x ", i, in[i]);
+            printf("out[%d]:%x ", i, out[i]);
+            printf("out2[%d]:%x ", i, out2[i]);
+        }
+        printf("\n");
+
         usleep(250*1000);
+
     }
 
     return 0;
