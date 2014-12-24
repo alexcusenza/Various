@@ -8,6 +8,12 @@
 #include "clModbusTCP.h"
 #include <iostream>
 
+int bitstobytes(int numbits)
+{
+    int numbytes = (numbits / 8) + ((numbits % 8) ? 1 : 0);
+    return numbytes;
+}
+
 /* ==============================================
  * Constructor / Destructor
  *
@@ -46,7 +52,10 @@ int clModbusTCP::read_02h(
     int bytecount;
     const int func = MODBUS_FC_READ_DISCRETE_INPUTS;
     int length = MODBUS_TCP_HEADER_READ_LENGTH;
-    int numbytes = (numbits / 8) + ((numbits % 8) ? 1 : 0);
+    int numbytes = bitstobytes(numbits);
+
+    req_length = MODBUS_TCP_PRESET_REQ_LENGTH;
+    rsp_length = MODBUS_TCP_PRESET_RSP_LENGTH + numbytes;
 
     // Check max of data num_
     if (numbits > MODBUS_MAX_READ_BITS)
@@ -57,13 +66,11 @@ int clModbusTCP::read_02h(
     }
 
     // Build Message
-    req_length = _buildmessage(
+    _buildmessage(
             func,
             length,
             addr,
             numbits);
-
-    rsp_length = MODBUS_TCP_PRESET_RSP_LENGTH + numbytes;
 
     // Send Request Message
     retval = mp_socket->SendMessage(req_msg, req_length);
@@ -109,6 +116,9 @@ int clModbusTCP::read_03h(
     int length = MODBUS_TCP_HEADER_READ_LENGTH;
     int numbytes = numwords * 2;
 
+    req_length = MODBUS_TCP_PRESET_REQ_LENGTH;
+    rsp_length = MODBUS_TCP_PRESET_RSP_LENGTH + numbytes;
+
     // Check max of data num_
     if (numwords > MODBUS_MAX_READ_REGISTERS)
     {
@@ -118,13 +128,11 @@ int clModbusTCP::read_03h(
     }
 
     // Build Message
-    req_length = _buildmessage(
+    _buildmessage(
             func,
             length,
             addr,
             numwords);
-
-    rsp_length = MODBUS_TCP_PRESET_RSP_LENGTH + numbytes;
 
     // Send Request Message
     retval = mp_socket->SendMessage(req_msg, req_length);
@@ -167,8 +175,11 @@ int clModbusTCP::write_0fh(
 {
     int retval;
     const int func = MODBUS_FC_WRITE_MULTIPLE_COILS;
-    int numbytes = (numbits / 8) + ((numbits % 8) ? 1 : 0);
+    int numbytes = bitstobytes(numbits);
     int length = MODBUS_TCP_HEADER_WRITE_LENGTH + numbytes;
+
+    req_length = MODBUS_TCP_PRESET_REQ_LENGTH;
+    rsp_length = MODBUS_TCP_PRESET_RSP_LENGTH;
 
     // Check max of data num_
     if (numbits > MODBUS_MAX_WRITE_BITS)
@@ -179,7 +190,7 @@ int clModbusTCP::write_0fh(
     }
 
     // Build Message
-    req_length = _buildmessage(
+    _buildmessage(
             func,
             length,
             addr,
@@ -192,8 +203,6 @@ int clModbusTCP::write_0fh(
     {
         req_msg[req_length++] = src[i];
     }
-
-    rsp_length = MODBUS_TCP_PRESET_RSP_LENGTH;
 
     // Send Request Message
     retval = mp_socket->SendMessage(req_msg, req_length);
@@ -230,6 +239,9 @@ int clModbusTCP::write_10h(
     int numbytes = numwords * 2;
     int length = MODBUS_TCP_HEADER_WRITE_LENGTH + numbytes;
 
+    req_length = MODBUS_TCP_PRESET_REQ_LENGTH;
+    rsp_length = MODBUS_TCP_PRESET_RSP_LENGTH;
+
     // Check max of data num_
     if (numwords > MODBUS_MAX_WRITE_REGISTERS)
     {
@@ -239,11 +251,12 @@ int clModbusTCP::write_10h(
     }
 
     // Build Message
-    req_length = _buildmessage(
+    _buildmessage(
             func,
             length,
             addr,
             numwords);
+
     req_msg[req_length++] = numbytes;
 
     for (int i = 0; i < numbytes; i++)
@@ -251,8 +264,6 @@ int clModbusTCP::write_10h(
         req_msg[req_length++] = src[i] >> 8;
         req_msg[req_length++] = src[i] & 0x00FF;
     }
-
-    rsp_length = MODBUS_TCP_PRESET_RSP_LENGTH;
 
     // Send Request Message
     retval = mp_socket->SendMessage(req_msg, req_length);
@@ -278,7 +289,7 @@ int clModbusTCP::write_10h(
  * ==============================================
  */
 
-int clModbusTCP::_buildmessage(
+void clModbusTCP::_buildmessage(
     int func,
     int len,
     int addr,
@@ -310,7 +321,6 @@ int clModbusTCP::_buildmessage(
     req_msg[10] = count >> 8;
     req_msg[11] = count & 0x00ff;
 
-    return MODBUS_TCP_PRESET_REQ_LENGTH;
 }
 
 /* ==============================================

@@ -108,7 +108,7 @@ public:
         unsigned char *);   // destination
 
 private:
-    int _buildmessage(
+    void _buildmessage(
         int,                // function
         int,                // length
         int,                // address
