@@ -40,16 +40,16 @@
  */
 
 #define MODBUS_TCP_HEADER_READ_LENGTH       6
-// 6 bytes = 1(uid) + 1(func) + 2(addr) + 2(bits)
+// 6 bytes =  uid-1, func-1, addr-2, bits-2
 
 #define MODBUS_TCP_HEADER_WRITE_LENGTH      7
-// 7 bytes = 1(uid) + 1(func) + 2(addr) + 2(bits/bytes) + 1(bytes/words)
+// 7 bytes =  uid-1, func-1, addr-2, bits/bytes-2, bytes/words-1
 
 #define MODBUS_TCP_PRESET_REQ_LENGTH        12
-// 12 bytes = transid,2 + protoid,2 + length,2 + uid,1 + func,1 + addr,2 + size,2
+// 12 bytes = transid-2, protoid-2, length-2, uid-1, func-1, addr-2, size-2
 
 #define MODBUS_TCP_PRESET_RSP_LENGTH        12
-// 9 bytes = transid,2 + protoid,2 + length,2 + uid,1 + func,1 + addr,2 + size,2
+// 12 bytes = transid-2, protoid-2, length-2, uid-1, func-1, addr-2, size-2
 
 #define MIN_REQ_LENGTH 12
 #define MAX_RSP_LENGTH 260
@@ -87,6 +87,9 @@ class clModbusTCP : public clMemAccess
 public:
     clModbusTCP(int,  const char *);
     virtual ~clModbusTCP();
+
+    void read();
+    void write();
 
     int read_02h(
         int,                // address

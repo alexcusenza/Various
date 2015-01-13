@@ -14,7 +14,11 @@ public:
     clMemAccess();
     virtual ~clMemAccess();
 
-    virtual void read() = 0;
+    virtual void read(
+        int,                    // address
+        int,                    // number of bits
+        unsigned char *) = 0;   // destination)
+
     virtual void write() = 0;
 };
 

@@ -38,7 +38,7 @@ clScanner::~clScanner()
 void clScanner::SetWriteData(unsigned char * data)
 {
     scannermutex.lock();
-    out =  data;
+    out = data;
     scannermutex.unlock();
 }
 
@@ -49,11 +49,11 @@ void clScanner::Execute()
     while(ret>0)
     {
         // READ
-        ret = mp_modbus->read_02h(m_readmemaddr, m_readmemsize, in);
+        ret = mp_modbus->read(m_readmemaddr, m_readmemsize, in);
         if (ret < 0)
         {
             printf("read error \n");
-           //return -1;
+            return;
         }
 
         // WRITE
@@ -61,7 +61,7 @@ void clScanner::Execute()
         if (ret < 0)
         {
             printf("write error \n");
-            //return -1;
+            return;
         }
     }
 }

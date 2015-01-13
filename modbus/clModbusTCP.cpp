@@ -10,8 +10,7 @@
 
 int bitstobytes(int numbits)
 {
-    int numbytes = (numbits / 8) + ((numbits % 8) ? 1 : 0);
-    return numbytes;
+    return (numbits / 8) + ((numbits % 8) ? 1 : 0);
 }
 
 /* ==============================================
@@ -35,7 +34,26 @@ clModbusTCP::~clModbusTCP()
 {
     delete req_msg;
     delete rsp_msg;
+
 }
+
+/* ==============================================
+ * Virtual Read and Write
+ *
+ * ==============================================
+ */
+
+void clModbusTCP::read()
+{
+
+}
+
+
+void clModbusTCP::write()
+{
+
+}
+
 
 /* ==============================================
  * Modbus Function 02h

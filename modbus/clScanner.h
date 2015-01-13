@@ -28,9 +28,13 @@ public:
     void SetWriteData(unsigned char *);
     void Execute();
 
+    void read(
+        int,
+        int
+        unsigned char *);
 private:
 
-    clModbusTCP  * mp_modbus;
+    clModbusTCP * mp_modbus;
     std::thread scannerthread;
     std::mutex scannermutex;
 
