@@ -12,10 +12,9 @@ ModbusProtocol::ModbusProtocol(
 		AbModbusFunc newReadMod,
 		AbModbusFunc newWriteMod)
 :devConnect(newConnect),
- modReadFunction(newReadMod),
- modWriteFunction(newWriteMod)
+ modRead(newReadMod),
+ modWrite(newWriteMod)
 {
-
 }
 
 ModbusProtocol::~ModbusProtocol()
@@ -25,28 +24,33 @@ ModbusProtocol::~ModbusProtocol()
 
 void ModbusProtocol::setModReadFunc(AbModbusFunc readfunc)
 {
-	modReadFunction = readfunc;
+	modRead = readfunc;
 }
 
 void ModbusProtocol::setModWriteFunc(AbModbusFunc writefunc)
 {
-	modWriteFunction = writefunc;
+	modWrite = writefunc;
 }
 
 
 void ModbusProtocol::Read()
 {
-	//modReadFunction.message();
 	devConnect.Send(
-			modReadFunction.message().req_msg,
-			modReadFunction.req_length);
+			modRead.message().req_msg,
+			modRead.req_length);
 
-	devConnect.Recv();
+	devConnect.Recv(
+			modRead.rsp_msg,
+			modRead.rsp_length);
 }
 
 void ModbusProtocol::Write()
 {
-	modWriteFunction.message();
-	devConnect.Send(modWriteFunction.message().req_msg);
-	devConnect.Recv();
+	devConnect.Send(
+			modWrite.message().req_msg,
+			modWrite.req_length);
+
+	devConnect.Recv(
+			modWrite.rsp_msg,
+			modWrite.rsp_length);
 }

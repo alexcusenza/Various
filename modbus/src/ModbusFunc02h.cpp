@@ -46,6 +46,9 @@ ModbusFunc02h * ModbusFunc02h::message()
 
 void ModbusFunc02h::check()
 {
-
 }
 
+void ModbusFunc02h::data()
+{
+}
+}

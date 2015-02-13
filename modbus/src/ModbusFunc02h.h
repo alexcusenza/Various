@@ -22,6 +22,7 @@ public:
 
 	ModbusFunc02h * message();
 	void check();
+	void data();
 
 private:
 

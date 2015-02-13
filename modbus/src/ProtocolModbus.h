@@ -26,8 +26,8 @@ public:
 
 private:
 	AbConnect devConnect;
-	AbModbusFunc modReadFunction;
-	AbModbusFunc modWriteFunction;
+	AbModbusFunc modRead;
+	AbModbusFunc modWrite;
 };
 
 #endif /* PROTOCOLMODBUS_H_ */

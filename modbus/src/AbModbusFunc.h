@@ -91,6 +91,7 @@ protected:
 
 	virtual AbModbusFunc message();
 	virtual void check();
+	virtual void data();
 
 	unsigned char * req_msg;
 	unsigned char * rsp_msg;
