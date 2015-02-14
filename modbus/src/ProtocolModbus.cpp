@@ -14,12 +14,17 @@ ModbusProtocol::ModbusProtocol(
 :devConnect(newConnect),
  modRead(newReadMod),
  modWrite(newWriteMod)
-{
-}
+{}
 
 ModbusProtocol::~ModbusProtocol()
 {
 	// TODO Auto-generated destructor stub
+}
+
+
+void ModbusProtocol::setConnectDevice(AbConnect newConnect)
+{
+	devConnect = newConnect;
 }
 
 void ModbusProtocol::setModReadFunc(AbModbusFunc readfunc)
@@ -33,7 +38,7 @@ void ModbusProtocol::setModWriteFunc(AbModbusFunc writefunc)
 }
 
 
-void ModbusProtocol::Read()
+void ModbusProtocol::Read( )
 {
 	devConnect.Send(
 			modRead.message().req_msg,

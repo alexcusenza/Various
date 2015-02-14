@@ -18,6 +18,7 @@ public:
 	ModbusProtocol(AbConnect, AbModbusFunc, AbModbusFunc);
 	virtual ~ModbusProtocol();
 
+	void setConnectDevice(AbConnect);
 	void setModReadFunc(AbModbusFunc);
 	void setModWriteFunc(AbModbusFunc);
 
