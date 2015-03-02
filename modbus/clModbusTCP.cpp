@@ -149,8 +149,7 @@ int clModbusTCP::read_03h(
     // Build Message
     _buildmessage(
             func,
-            length,
-            addr,
+            length,            addr,
             numwords);
 
     // Send Request Message
@@ -181,7 +180,7 @@ int clModbusTCP::read_03h(
 
 
 /* ==============================================
- * Modbus Function 0fh
+ * Modbus Function 0cfh
  * WRITE MULTIPLE COILS
  *
  * ==============================================
