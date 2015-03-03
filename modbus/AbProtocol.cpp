@@ -17,7 +17,7 @@ AbProtocol::~AbProtocol() {
 }
 
 
-AbProtocol::setProtocolBehavior(AbConnect con)
+void AbProtocol::setProtocolBehavior(AbConnect con)
 {
 	devConnect = con;
 }

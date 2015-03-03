@@ -9,6 +9,8 @@
 #define MODBUS_H_
 
 #include "AbProtocol.h"
+#include "AbConnect.h"
+#include "AbModbusFunc.h"
 
 class ModbusProtocol : public AbProtocol
 {
@@ -16,16 +18,16 @@ public:
 	ModbusProtocol();
 	virtual ~ModbusProtocol();
 
-	void setModReadFunc();
-
-	void setModWriteFunc();
+	void setModReadFunc(AbModbusFunc);
+	void setModWriteFunc(AbModbusFunc);
 
 	void Read();
-
 	void Write();
 
 private:
 	AbConnect devConnect;
+	AbModbusFunc modReadFunction;
+	AbModbusFunc modWriteFunction;
 };
 
 #endif /* MODBUS_H_ */

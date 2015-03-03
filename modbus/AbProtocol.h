@@ -8,6 +8,8 @@
 #ifndef ABPROTOCOL_H_
 #define ABPROTOCOL_H_
 
+#include "AbConnect.h"
+
 class AbProtocol
 {
 public:

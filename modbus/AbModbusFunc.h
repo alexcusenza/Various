@@ -13,8 +13,9 @@ public:
 	AbModbusFunc();
 	virtual ~AbModbusFunc();
 
-	virtual void buildmessage();
-	virtual void checkresponse();
+protected:
+	void buildmessage(int, int, int, int);
+	void checkresponse();
 	virtual void message();
 };
 

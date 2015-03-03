@@ -15,6 +15,9 @@ class SocketConnect : public AbConnect
 public:
 	SocketConnect();
 	virtual ~SocketConnect();
+
+	int SendMessage();
+	int RecvMessage();
 };
 
 #endif /* SOCKET_H_ */
