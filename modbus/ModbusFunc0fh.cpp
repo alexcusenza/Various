@@ -7,8 +7,8 @@
 
 #include "ModbusFunc0fh.h"
 
-ModbusFunc0fh::ModbusFunc0fh() {
-	// TODO Auto-generated constructor stub
+ModbusFunc0fh::ModbusFunc0fh()
+{
 	numbytes = bitstobytes(numbits);
 	func = MODBUS_FC_READ_DISCRETE_INPUTS;
 	length = MODBUS_TCP_HEADER_READ_LENGTH;
@@ -20,6 +20,7 @@ ModbusFunc0fh::ModbusFunc0fh() {
 ModbusFunc0fh::~ModbusFunc0fh() {
 	// TODO Auto-generated destructor stub
 }
+
 
 void ModbusFunc0fh::setAddr(int addr)
 {

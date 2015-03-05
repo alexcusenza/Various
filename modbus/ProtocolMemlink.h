@@ -5,8 +5,8 @@
  *      Author: jbw
  */
 
-#ifndef MEMLINK_H_
-#define MEMLINK_H_
+#ifndef PROTOCOLMEMLINK_H_
+#define PROTOCOLMEMLINK_H_
 
 #include "AbProtocol.h"
 
@@ -17,4 +17,4 @@ public:
 	virtual ~MemlinkProtocol();
 };
 
-#endif /* MEMLINK_H_ */
+#endif /* PROTOCOLMEMLINK_H_ */

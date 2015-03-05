@@ -5,8 +5,8 @@
  *      Author: jbw
  */
 
-#ifndef MODBUS_H_
-#define MODBUS_H_
+#ifndef PROTOCOLMODBUS_H_
+#define PROTOCOLMODBUS_H_
 
 #include "AbProtocol.h"
 #include "AbConnect.h"
@@ -30,4 +30,4 @@ private:
 	AbModbusFunc modWriteFunction;
 };
 
-#endif /* MODBUS_H_ */
+#endif /* PROTOCOLMODBUS_H_ */

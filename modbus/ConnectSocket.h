@@ -5,8 +5,8 @@
  *      Author: jbw
  */
 
-#ifndef SOCKET_H_
-#define SOCKET_H_
+#ifndef CONNECTSOCKET_H_
+#define CONNECTSOCKET_H_
 
 #include "AbConnect.h"
 
@@ -20,4 +20,4 @@ public:
 	int RecvMessage();
 };
 
-#endif /* SOCKET_H_ */
+#endif /* CONNECTSOCKET_H_ */

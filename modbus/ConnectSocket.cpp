@@ -5,7 +5,7 @@
  *      Author: jbw
  */
 
-#include "Socket.h"
+#include "ConnectSocket.h"
 
 SocketConnect::SocketConnect() {
 	// TODO Auto-generated constructor stub

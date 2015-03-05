@@ -8,7 +8,14 @@
 #include "ModbusFunc02h.h"
 
 ModbusFunc02h::ModbusFunc02h() {
-	// TODO Auto-generated constructor stub
+
+	numbytes = bitstobytes(numbits);
+	func = MODBUS_FC_READ_DISCRETE_INPUTS;
+	length = MODBUS_TCP_HEADER_READ_LENGTH;
+
+	req_length = MODBUS_TCP_PRESET_REQ_LENGTH;
+	rsp_length = MODBUS_TCP_PRESET_RSP_LENGTH + numbytes;
+
 
 }
 

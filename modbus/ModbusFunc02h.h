@@ -22,17 +22,15 @@ public:
 	void message();
 
 private:
+
 	int m_addr;
 	int m_numbits;
 
 	int retval;
 	int bytecount;
-	const int func = MODBUS_FC_READ_DISCRETE_INPUTS;
-	int length = MODBUS_TCP_HEADER_READ_LENGTH;
-	int numbytes = bitstobytes(numbits);
-
-	unsigned char * req_length = MODBUS_TCP_PRESET_REQ_LENGTH;
-	unsigned char * rsp_length = MODBUS_TCP_PRESET_RSP_LENGTH + numbytes;
+	const int func;
+	int length;
+	int numbytes;
 
 
 };

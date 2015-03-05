@@ -5,14 +5,15 @@
  *      Author: jbw
  */
 
-#include "Modbus.h"
+#include "ProtocolModbus.h"
 
-ModbusProtocol::ModbusProtocol() {
-	// TODO Auto-generated constructor stub
+ModbusProtocol::ModbusProtocol()
+{
 
 }
 
-ModbusProtocol::~ModbusProtocol() {
+ModbusProtocol::~ModbusProtocol()
+{
 	// TODO Auto-generated destructor stub
 }
 

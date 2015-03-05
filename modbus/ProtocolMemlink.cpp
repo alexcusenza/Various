@@ -5,7 +5,7 @@
  *      Author: jbw
  */
 
-#include "Memlink.h"
+#include "ProtocolMemlink.h"
 
 MemlinkProtocol::MemlinkProtocol() {
 	// TODO Auto-generated constructor stub
