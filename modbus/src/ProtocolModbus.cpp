@@ -7,7 +7,13 @@
 
 #include "ProtocolModbus.h"
 
-ModbusProtocol::ModbusProtocol()
+ModbusProtocol::ModbusProtocol(
+		AbConnect newConnect,
+		AbModbusFunc newReadMod,
+		AbModbusFunc newWriteMod)
+:devConnect(newConnect),
+ modReadFunction(newReadMod),
+ modWriteFunction(newWriteMod)
 {
 
 }
@@ -30,14 +36,17 @@ void ModbusProtocol::setModWriteFunc(AbModbusFunc writefunc)
 
 void ModbusProtocol::Read()
 {
-	modReadFunction.message();
-	devConnect.Send();
+	//modReadFunction.message();
+	devConnect.Send(
+			modReadFunction.message().req_msg,
+			modReadFunction.req_length);
+
 	devConnect.Recv();
 }
 
 void ModbusProtocol::Write()
 {
 	modWriteFunction.message();
-	devConnect.Send();
+	devConnect.Send(modWriteFunction.message().req_msg);
 	devConnect.Recv();
 }

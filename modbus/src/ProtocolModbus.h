@@ -15,7 +15,7 @@
 class ModbusProtocol : public AbProtocol
 {
 public:
-	ModbusProtocol();
+	ModbusProtocol(AbConnect, AbModbusFunc, AbModbusFunc);
 	virtual ~ModbusProtocol();
 
 	void setModReadFunc(AbModbusFunc);

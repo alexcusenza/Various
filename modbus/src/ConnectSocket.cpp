@@ -20,17 +20,17 @@ int SocketConnect::SendMessage()
 {
 	int retval;
 
-	    if (_isconnected() < 0)
-	        return -1;
+	if (_isconnected() < 0)
+		return -1;
 
-	    retval = send(socketid, message, length, 0);
-	    if (retval < 0)
-	    {
-	        perror("Send Error ");
-	        return -1;
-	    }
+	retval = send(socketid, message, length, 0);
+	if (retval < 0)
+	{
+		perror("Send Error ");
+		return -1;
+	}
 
-	    return 1;
+	return 1;
 
 
 }

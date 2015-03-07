@@ -7,16 +7,13 @@
 
 #include "ModbusFunc02h.h"
 
-ModbusFunc02h::ModbusFunc02h() {
-
-	numbytes = bitstobytes(numbits);
-	func = MODBUS_FC_READ_DISCRETE_INPUTS;
-	length = MODBUS_TCP_HEADER_READ_LENGTH;
-
+ModbusFunc02h::ModbusFunc02h(int uid, int num)
+{
+	m_func = MODBUS_FC_READ_DISCRETE_INPUTS;
+	m_length = MODBUS_TCP_HEADER_READ_LENGTH;
 	req_length = MODBUS_TCP_PRESET_REQ_LENGTH;
-	rsp_length = MODBUS_TCP_PRESET_RSP_LENGTH + numbytes;
-
-
+	setAddr(addr);
+	setRspLength(num);
 }
 
 ModbusFunc02h::~ModbusFunc02h() {
@@ -30,10 +27,25 @@ void ModbusFunc02h::setAddr(int addr)
 
 void ModbusFunc02h::setNumBits(int numbits)
 {
-	m_numbits = numbits;
+	m_count = numbits;
+
+	setRspLength(numbits);
 }
 
-void ModbusFunc02h::message()
+void ModbusFunc02h::setRspLength(int num)
 {
-	buildmessage(func, length, m_addr, m_numbits);
+	rsp_length = MODBUS_TCP_PRESET_RSP_LENGTH + bitstobytes(num);
 }
+
+ModbusFunc02h * ModbusFunc02h::message()
+{
+	buildmessage();
+
+	return this;
+}
+
+void ModbusFunc02h::check()
+{
+
+}
+

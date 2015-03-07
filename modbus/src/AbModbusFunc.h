@@ -79,21 +79,33 @@
 
 
 
-class AbModbusFunc {
+class AbModbusFunc
+{
 public:
-	AbModbusFunc();
+	AbModbusFunc(int, int, int);
 	virtual ~AbModbusFunc();
 
 protected:
-	void buildmessage(int, int, int, int);
+	void buildmessage();
 	void checkresponse();
-	virtual void message();
+
+	virtual AbModbusFunc message();
+	virtual void check();
 
 	unsigned char * req_msg;
 	unsigned char * rsp_msg;
 
-	unsigned char * req_length;
-	unsigned char * rsp_length ;
+	int req_length;
+	int rsp_length ;
+
+	int m_uid;
+	int m_addr;
+	int m_numbits;
+	int m_count;
+	const int m_func;
+	int m_length;
+
+	int bytecount;
 };
 
 #endif /* ABMODBUSFUNC_H_ */

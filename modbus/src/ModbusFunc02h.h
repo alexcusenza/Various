@@ -13,24 +13,18 @@
 class ModbusFunc02h : AbModbusFunc
 {
 public:
-	ModbusFunc02h();
+	ModbusFunc02h(int, int);
 	virtual ~ModbusFunc02h();
 
 	void setAddr(int);
 	void setNumBits(int);
+	void setRspLength(int);
 
-	void message();
+	ModbusFunc02h * message();
+	void check();
 
 private:
 
-	int m_addr;
-	int m_numbits;
-
-	int retval;
-	int bytecount;
-	const int func;
-	int length;
-	int numbytes;
 
 
 };

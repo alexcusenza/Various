@@ -20,6 +20,7 @@ public:
 	void setNumBits(int);
 
 	void message();
+	void check();
 
 private:
 	int m_addr;

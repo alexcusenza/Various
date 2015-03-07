@@ -46,3 +46,8 @@ void ModbusFunc0fh::message()
 		req_msg[req_length++] = src[i];
 	}
 }
+
+void ModbusFunc0fh::check()
+{
+
+}
